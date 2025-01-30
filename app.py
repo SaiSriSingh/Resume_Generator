@@ -17,42 +17,47 @@ class PDF(FPDF):
     def header(self):
         if self.theme == "classic":
             self.set_font("Arial", "B", 16)
+            self.set_text_color(0, 0, 0)  # Black text
             self.cell(0, 10, "Resume", ln=True, align='C')
             self.ln(10)
         elif self.theme == "creative":
             self.set_font("Courier", "B", 20)
-            self.set_text_color(0, 102, 204)
+            self.set_text_color(0, 102, 204)  # Blue text
             self.cell(0, 10, "Creative Resume", ln=True, align='C')
             self.ln(10)
         elif self.theme == "modern":
             self.set_font("Helvetica", "B", 18)
-            self.set_fill_color(50, 50, 50)
-            self.set_text_color(255, 255, 255)
+            self.set_fill_color(50, 50, 50)  # Dark background
+            self.set_text_color(255, 255, 255)  # White text
             self.cell(0, 10, "Modern Resume", ln=True, align='C', fill=True)
             self.ln(15)
 
     def section_header(self, title):
         if self.theme == "classic":
             self.set_font("Arial", "B", 12)
+            self.set_text_color(0, 0, 0)  # Black text
             self.cell(0, 10, title, border=1, ln=True, align='L')
         elif self.theme == "creative":
             self.set_font("Courier", "B", 14)
-            self.set_text_color(0, 102, 204)
+            self.set_text_color(0, 102, 204)  # Blue text
             self.cell(0, 10, title, border="B", ln=True, align='C')
         elif self.theme == "modern":
             self.set_font("Helvetica", "B", 13)
-            self.set_fill_color(230, 230, 230)
+            self.set_fill_color(230, 230, 230)  # Light gray background
+            self.set_text_color(50, 50, 50)  # Dark text
             self.cell(0, 10, title, ln=True, align='L', fill=True)
         self.ln(5)
 
     def section_content(self, content):
         if self.theme == "classic":
             self.set_font("Arial", size=10)
+            self.set_text_color(0, 0, 0)  # Black text
         elif self.theme == "creative":
             self.set_font("Courier", size=11)
-            self.set_text_color(80, 80, 80)
+            self.set_text_color(0, 102, 204)  # Blue text
         elif self.theme == "modern":
             self.set_font("Helvetica", size=11)
+            self.set_text_color(80, 80, 80)  # Dark gray text
 
         self.multi_cell(0, 10, content)
         self.ln(5)
@@ -97,15 +102,16 @@ def generate():
         pdf.image(profile_pic_path, x=75, y=30, w=60, h=60)
         pdf.ln(70)
 
-    # Apply theme-specific text styles
+    # Set font and color for the theme
     if theme == "classic":
         pdf.set_font("Arial", size=12)
+        pdf.set_text_color(0, 0, 0)  # Black
     elif theme == "creative":
         pdf.set_font("Courier", "B", 14)
-        pdf.set_text_color(0, 102, 204)
+        pdf.set_text_color(0, 102, 204)  # Blue
     elif theme == "modern":
         pdf.set_font("Helvetica", "B", 13)
-        pdf.set_text_color(50, 50, 50)
+        pdf.set_text_color(50, 50, 50)  # Dark gray
 
     pdf.cell(0, 10, name, ln=True, align='C')
     pdf.cell(0, 10, email, ln=True, align='C')
