@@ -11,18 +11,49 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class PDF(FPDF):
+    def __init__(self, theme):
+        super().__init__()
+        self.theme = theme
+
     def header(self):
-        self.set_font("Arial", style='B', size=16)
-        self.cell(200, 10, "Resume", ln=True, align='C')
-        self.ln(10)
+        if self.theme == "classic":
+            self.set_font("Arial", "B", 16)
+            self.cell(200, 10, "Resume", ln=True, align='C')
+            self.ln(10)
+        elif self.theme == "creative":
+            self.set_font("Courier", "B", 20)
+            self.set_text_color(100, 100, 255)
+            self.cell(200, 10, "Creative Resume", ln=True, align='C')
+            self.ln(10)
+        elif self.theme == "modern":
+            self.set_font("Helvetica", "B", 18)
+            self.set_fill_color(50, 50, 50)
+            self.set_text_color(255, 255, 255)
+            self.cell(200, 10, "Modern Resume", ln=True, align='C', fill=True)
+            self.ln(15)
 
     def chapter_title(self, title):
-        self.set_font("Arial", style='B', size=12)
-        self.cell(0, 10, title, ln=True, align='L')
+        if self.theme == "classic":
+            self.set_font("Arial", "B", 12)
+        elif self.theme == "creative":
+            self.set_font("Courier", "B", 14)
+            self.set_text_color(0, 102, 204)
+        elif self.theme == "modern":
+            self.set_font("Helvetica", "B", 13)
+            self.set_fill_color(230, 230, 230)
+
+        self.cell(0, 10, title, ln=True, align='L', fill=(self.theme == "modern"))
         self.ln(5)
 
     def chapter_content(self, content):
-        self.set_font("Arial", size=10)
+        if self.theme == "classic":
+            self.set_font("Arial", size=10)
+        elif self.theme == "creative":
+            self.set_font("Courier", size=11)
+            self.set_text_color(80, 80, 80)
+        elif self.theme == "modern":
+            self.set_font("Helvetica", size=11)
+
         self.multi_cell(0, 10, content)
         self.ln(5)
 
@@ -49,7 +80,7 @@ def generate():
     languages = request.form.get('languages', 'N/A')
     theme = request.form.get('theme', 'classic')
 
-    pdf = PDF()
+    pdf = PDF(theme)
     pdf.add_page()
 
     profile_pic = request.files.get('profile_pic')
@@ -67,7 +98,16 @@ def generate():
         pdf.image(profile_pic_path, x=75, y=30, w=60, h=60)
         pdf.ln(70)
 
-    pdf.set_font("Arial", size=12)
+    # Applying theme styles
+    if theme == "classic":
+        pdf.set_font("Arial", size=12)
+    elif theme == "creative":
+        pdf.set_font("Courier", "B", 14)
+        pdf.set_text_color(0, 102, 204)
+    elif theme == "modern":
+        pdf.set_font("Helvetica", "B", 13)
+        pdf.set_text_color(50, 50, 50)
+
     pdf.cell(200, 10, name, ln=True, align='C')
     pdf.cell(200, 10, email, ln=True, align='C')
     pdf.cell(200, 10, f"Phone: {phone}", ln=True, align='C')
