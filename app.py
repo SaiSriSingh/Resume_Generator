@@ -15,13 +15,13 @@ class PDF(FPDF):
         self.theme = theme
 
     def apply_theme_colors(self, is_content=False):
-        """Apply theme-specific colors. `is_content=True` changes content color differently for Modern theme"""
+        """Apply different colors for themes. `is_content=True` changes only the content text."""
         if self.theme == "classic":
-            return (0, 0, 0)  # Black text
+            return (0, 0, 0)  # Black for everything
         elif self.theme == "creative":
-            return (0, 102, 204)  # Blue text
+            return (0, 102, 204)  # Blue for everything
         elif self.theme == "modern":
-            return (255, 102, 0) if is_content else (50, 50, 50)  # Orange for content, Dark Gray for headers
+            return (255, 102, 0) if is_content else (50, 50, 50)  # **Orange for content, Dark Gray for headers**
 
     def header(self):
         r, g, b = self.apply_theme_colors()
@@ -54,8 +54,8 @@ class PDF(FPDF):
         self.ln(5)
 
     def section_content(self, content):
-        r, g, b = self.apply_theme_colors(is_content=True)  # Use special color for Modern theme
-        self.set_text_color(r, g, b)
+        r, g, b = self.apply_theme_colors(is_content=True)  # Use special color for Modern theme content
+        self.set_text_color(r, g, b)  # **Explicitly set color before writing content**
 
         if self.theme == "classic":
             self.set_font("Arial", size=10)
@@ -64,7 +64,8 @@ class PDF(FPDF):
         elif self.theme == "modern":
             self.set_font("Helvetica", size=11)
 
-        self.multi_cell(0, 10, content)
+        for line in content.split("\n"):  # **Ensuring each line gets correct color**
+            self.cell(0, 10, line, ln=True)
         self.ln(5)
 
 @app.route('/')
